@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using RuleEngine.Common;
 using System.Linq;
+using RuleEngine;
 
 IEnumerable<Turbine> turbines = new List<Turbine> 
 { 
@@ -57,57 +58,30 @@ IEnumerable<Rule> rules = new List<Rule>
     //}
 };
 
-List<RuleTracker> ruleTrackers = new List<RuleTracker>();
+List<RuleLiveEventsTracker> ruleTrackers = new List<RuleLiveEventsTracker>();
 
 foreach (Rule rule in rules)
 {
-    ruleTrackers.Add(new RuleTracker { Rule = rule, LastTimeRuleIsSatisfied = DateTime.Now });
+    ruleTrackers.Add(new RuleLiveEventsTracker(rule));
 }
 
 void CheckAllRules(LiveEvent liveEvent)
 {
-    foreach (RuleTracker ruleTracker in ruleTrackers)
+    foreach (RuleLiveEventsTracker ruleTracker in ruleTrackers)
     {
-        ruleTracker.DetermineIfLiveEventFitsIntoRule(liveEvent);
-        ruleTracker.DetermineIfRuleIsSatisfied();
+        IEnumerable<LiveEvent> liveEventsThatFitIntoRule = ruleTracker.GetLiveEventsThatFitIntoRule(liveEvent);
+
+        RuleChecker ruleChecker = new RuleChecker(ruleTracker.Rule, liveEventsThatFitIntoRule);
+
+        if (ruleChecker.RuleIsSatisfied())
+        {
+            RuleNotifier notifier = new RuleNotifier(ruleTracker.Rule.Diagnosis);
+            notifier.Notify();
+        }
     }
 }
 
 CheckAllRules(new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns1", Timestamp = DateTime.Now });
 CheckAllRules(new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns2", Timestamp = DateTime.Now });
-
-//IEnumerable<LiveEvent> liveEvents = new List<LiveEvent>
-//{
-//    new LiveEvent { EventIds = new List<string>{ "stopped" }, TurbineId = "ns1", Timestamp = DateTime.Now },
-//    new LiveEvent { EventIds = new List<string>{ "stopped" }, TurbineId = "ns2", Timestamp = DateTime.Now }
-//};
-
-//foreach (RuleTracker ruleTracker in ruleTrackers)
-//{
-//    if (ruleTracker.Rule.TurbineAggregation == TurbineAggregation.All)
-//    {
-//        var liveEventsRelatedToRule = liveEvents.Where(x => ruleTracker.Rule.TurbineIds.Contains(x.TurbineId));
-
-//        if (liveEventsRelatedToRule.Select(x => x.TurbineId).Distinct().Count() != ruleTracker.Rule.TurbineIds.Distinct().Count())
-//        {
-//            continue;
-//        }
-
-//        int count = 0;
-
-//        foreach (LiveEvent _event in liveEventsRelatedToRule)
-//        {
-//            if (_event.EventIds.Intersect(ruleTracker.Rule.RequiredEvents).Any() && !_event.EventIds.Intersect(ruleTracker.Rule.ForbidenEvents).Any())
-//            {
-//                count++;
-//            }
-//        }
-
-//        if (count == liveEventsRelatedToRule.Count())
-//        {
-//            Console.WriteLine(ruleTracker.Rule.Diagnosis);
-//        }
-//    }
-//}
 
 Console.ReadLine();
