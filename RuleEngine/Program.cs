@@ -58,30 +58,8 @@ IEnumerable<Rule> rules = new List<Rule>
     //}
 };
 
-List<RuleLiveEventsTracker> ruleTrackers = new List<RuleLiveEventsTracker>();
-
-foreach (Rule rule in rules)
-{
-    ruleTrackers.Add(new RuleLiveEventsTracker(rule));
-}
-
-void CheckAllRules(LiveEvent liveEvent)
-{
-    foreach (RuleLiveEventsTracker ruleTracker in ruleTrackers)
-    {
-        IEnumerable<LiveEvent> liveEventsThatFitIntoRule = ruleTracker.GetLiveEventsThatFitIntoRule(liveEvent);
-
-        RuleChecker ruleChecker = new RuleChecker(ruleTracker.Rule, liveEventsThatFitIntoRule);
-
-        if (ruleChecker.RuleIsSatisfied())
-        {
-            RuleNotifier notifier = new RuleNotifier(ruleTracker.Rule.Diagnosis);
-            notifier.Notify();
-        }
-    }
-}
-
-CheckAllRules(new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns1", Timestamp = DateTime.Now });
-CheckAllRules(new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns2", Timestamp = DateTime.Now });
+RuleService ruleService = new RuleService(rules);
+ruleService.CheckAllRules(new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns1", Timestamp = DateTime.Now });
+ruleService.CheckAllRules(new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns2", Timestamp = DateTime.Now });
 
 Console.ReadLine();

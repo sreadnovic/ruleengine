@@ -16,23 +16,34 @@ namespace RuleEngine.Common
 
         public List<LiveEvent> GetLiveEventsThatFitIntoRule(LiveEvent liveEvent)
         {
-            bool liveEventTurbineBelongsToRule = Rule.TurbineIds.Contains(liveEvent.TurbineId);
-            bool liveEventHasRequiredEvents = liveEvent.EventIds.Intersect(Rule.RequiredEvents).Any();
-            bool liveEventDoesNotHaveForbiddenEvents = !liveEvent.EventIds.Intersect(Rule.ForbidenEvents).Any();
-
-            if (liveEventTurbineBelongsToRule && liveEventHasRequiredEvents && liveEventDoesNotHaveForbiddenEvents)
+            if (liveEvent == null)
             {
-                if (_liveEventsThatFitIntoRule == null)
-                {
-                    _liveEventsThatFitIntoRule = new List<LiveEvent>();
-                }
+                return null;
+            }
 
+            InitializeLiveEventsThatFitIntoRule();
+
+            if (LiveEventTurbineBelongsToRule(liveEvent) 
+                && LiveEventHasRuleRequiredEvents(liveEvent)
+                && LiveEventDoesNotHaveRuleForbiddenEvents(liveEvent))
+            {
                 _liveEventsThatFitIntoRule.Add(liveEvent);
             }
 
             return _liveEventsThatFitIntoRule;
-
         }
+
+        private void InitializeLiveEventsThatFitIntoRule()
+        {
+            if (_liveEventsThatFitIntoRule == null)
+            {
+                _liveEventsThatFitIntoRule = new List<LiveEvent>();
+            }
+        }
+
+        private bool LiveEventTurbineBelongsToRule(LiveEvent liveEvent) => Rule.TurbineIds.Contains(liveEvent.TurbineId);
+        private bool LiveEventHasRuleRequiredEvents(LiveEvent liveEvent) => liveEvent.EventIds.Intersect(Rule.RequiredEvents).Any();
+        private bool LiveEventDoesNotHaveRuleForbiddenEvents(LiveEvent liveEvent) => !liveEvent.EventIds.Intersect(Rule.ForbidenEvents).Any();
 
     }
 }

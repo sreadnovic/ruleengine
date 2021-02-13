@@ -1,6 +1,6 @@
-﻿using RuleEngine.Common;
+﻿using RuleEngine.Factory;
 using RuleEngine.Models;
-using System;
+using RuleEngine.Strategy;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,37 +19,15 @@ namespace RuleEngine
 
         public bool RuleIsSatisfied()
         {
-            if (_liveEventsThatFitIntoRule == null || _rule == null)
-            {
-                return false;
-            }
+            RuleFactory ruleFactory = new RuleFactory();
+            IRuleStrategy ruleStrategy = ruleFactory.GetRuleStrategy(_rule);
 
-            List<string> ruleTurbines = _rule.TurbineIds;
-            List<string> liveEventsThatFitIntoRuleTurbines = _liveEventsThatFitIntoRule.Select(x => x.TurbineId).ToList();
+            Context ruleContext = new Context(ruleStrategy);
 
-            if (_rule.TurbineAggregation == TurbineAggregation.All)
+            if (ruleContext.Execute(_rule, _liveEventsThatFitIntoRule.ToList()))
             {
-                if (ruleTurbines.All(x => liveEventsThatFitIntoRuleTurbines.Contains(x)))
-                {
-                    ResetEvents();
-                    return true;
-                }
-            }
-            else if (_rule.TurbineAggregation == TurbineAggregation.Any)
-            {
-                if (ruleTurbines.Any(x => liveEventsThatFitIntoRuleTurbines.Contains(x)))
-                {
-                    ResetEvents();
-                    return true;
-                }
-            }
-            else
-            {
-                if (ruleTurbines.Where(x => liveEventsThatFitIntoRuleTurbines.Contains(x))?.Count() == 1)
-                {
-                    ResetEvents();
-                    return true;
-                }
+                ResetEvents();
+                return true;
             }
 
             return false;
