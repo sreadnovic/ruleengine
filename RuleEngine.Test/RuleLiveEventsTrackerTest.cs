@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace RuleEngine.Test
 {
-    public class RuleLiveEventsTrackerTest
+    class RuleLiveEventsTrackerTest
     {
         [Test]
         public void AddLiveEventToRule_AddValidLiveEventToRule_LiveEventsThatFitIntoRuleIncrease()

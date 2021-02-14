@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace RuleEngine
 {
-    class RuleChecker
+    public class RuleChecker
     {
         private Rule _rule;
         private IEnumerable<LiveEvent> _liveEventsThatFitIntoRule;
