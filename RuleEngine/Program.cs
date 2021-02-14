@@ -50,13 +50,20 @@ IEnumerable<Rule> rules = new List<Rule>
     }
 };
 
+List<LiveEvent> liveEvents = new List<LiveEvent> 
+{ 
+    new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns1", Timestamp = DateTime.Now },
+    new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns2", Timestamp = DateTime.Now.AddSeconds(10) },
+    new LiveEvent { EventIds = new List<string> { "started" }, TurbineId = "bp1", Timestamp = DateTime.Now.AddSeconds(20) },
+    new LiveEvent { EventIds = new List<string> { "started" }, TurbineId = "bg1", Timestamp = DateTime.Now.AddSeconds(30) },
+    new LiveEvent { EventIds = new List<string> { "maintained"}, TurbineId = "bp2", Timestamp = DateTime.Now.AddSeconds(40) }
+};
+
 RuleService ruleService = new RuleService(rules);
-ruleService.CheckAllRules(new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns1", Timestamp = DateTime.Now });
-ruleService.CheckAllRules(new LiveEvent { EventIds = new List<string> { "stopped" }, TurbineId = "ns2", Timestamp = DateTime.Now.AddSeconds(10) });
 
-ruleService.CheckAllRules(new LiveEvent { EventIds = new List<string> { "started" }, TurbineId = "bp1", Timestamp = DateTime.Now.AddSeconds(20) });
-ruleService.CheckAllRules(new LiveEvent { EventIds = new List<string> { "started", "stopped" }, TurbineId = "bg1", Timestamp = DateTime.Now.AddSeconds(30) });
-
-ruleService.CheckAllRules(new LiveEvent { EventIds = new List<string> { "maintained"}, TurbineId = "bp2", Timestamp = DateTime.Now.AddSeconds(40) });
+foreach (LiveEvent liveEvent in liveEvents)
+{
+    ruleService.CheckAllRules(liveEvent);
+}
 
 Console.ReadLine();

@@ -14,22 +14,20 @@ namespace RuleEngine.Common
             Rule = rule;
         }
 
-        public List<LiveEvent> GetLiveEventsThatFitIntoRule(LiveEvent liveEvent)
+        public List<LiveEvent> GetLiveEventsThatFitIntoRule()
         {
-            if (liveEvent == null)
-            {
-                return null;
-            }
+            return _liveEventsThatFitIntoRule;
+        }
 
+        public void AddLiveEventToRule(LiveEvent liveEvent)
+        {
             InitializeLiveEventsThatFitIntoRule();
 
-            if (LiveEventTurbineBelongsToRule(liveEvent) 
+            if (LiveEventTurbineBelongsToRule(liveEvent)
                 && LiveEventDoesNotHaveRuleForbiddenEvents(liveEvent))
             {
                 _liveEventsThatFitIntoRule.Add(liveEvent);
             }
-
-            return _liveEventsThatFitIntoRule;
         }
 
         private void InitializeLiveEventsThatFitIntoRule()
@@ -42,6 +40,5 @@ namespace RuleEngine.Common
 
         private bool LiveEventTurbineBelongsToRule(LiveEvent liveEvent) => Rule.TurbineIds.Contains(liveEvent.TurbineId);
         private bool LiveEventDoesNotHaveRuleForbiddenEvents(LiveEvent liveEvent) => !liveEvent.EventIds.Intersect(Rule.ForbidenEvents).Any();
-
     }
 }

@@ -19,9 +19,9 @@ namespace RuleEngine
         {
             foreach (RuleLiveEventsTracker ruleTracker in _ruleTrackers)
             {
-                IEnumerable<LiveEvent> liveEventsThatFitIntoRule = ruleTracker.GetLiveEventsThatFitIntoRule(liveEvent);
+                ruleTracker.AddLiveEventToRule(liveEvent);;
 
-                RuleChecker ruleChecker = new RuleChecker(ruleTracker.Rule, liveEventsThatFitIntoRule);
+                RuleChecker ruleChecker = new RuleChecker(ruleTracker.Rule, ruleTracker.GetLiveEventsThatFitIntoRule());
 
                 if (ruleChecker.RuleIsSatisfied())
                 {
