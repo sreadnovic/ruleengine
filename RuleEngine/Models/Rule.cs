@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RuleEngine.Models
 {
-    class Rule
+    public class Rule
 	{
 		public List<string> TurbineIds { get; set; }
 		public TurbineAggregation TurbineAggregation { get; set; }

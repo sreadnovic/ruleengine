@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RuleEngine.Models
 {
-    class LiveEvent
+    public class LiveEvent
 	{
 		public string TurbineId { get; set; }
 		public List<string> EventIds { get; set; }

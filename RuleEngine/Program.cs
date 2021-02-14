@@ -1,9 +1,8 @@
-﻿using RuleEngine.Models;
+﻿using RuleEngine;
+using RuleEngine.Common;
+using RuleEngine.Models;
 using System;
 using System.Collections.Generic;
-using RuleEngine.Common;
-using System.Linq;
-using RuleEngine;
 
 IEnumerable<Turbine> turbines = new List<Turbine> 
 { 

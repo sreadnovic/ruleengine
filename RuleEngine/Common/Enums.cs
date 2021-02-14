@@ -1,6 +1,6 @@
 ﻿namespace RuleEngine.Common
 {
-    enum TurbineAggregation
+    public enum TurbineAggregation
     {
         All, 
         Any, 

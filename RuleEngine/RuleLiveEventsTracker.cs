@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace RuleEngine.Common
 {
-    class RuleLiveEventsTracker
+    public class RuleLiveEventsTracker
     {
         private List<LiveEvent> _liveEventsThatFitIntoRule;
         public Rule Rule { get; }
