@@ -10,7 +10,18 @@ namespace RuleEngine.Strategy
     {
         public bool RuleFulfilled(Rule rule, List<LiveEvent> liveEventsThatFitIntoRule)
         {
-            return rule.TurbineIds.Any(x => liveEventsThatFitIntoRule.Select(x => x.TurbineId).Contains(x));
+            bool res = false;
+
+            foreach (LiveEvent liveEvent in liveEventsThatFitIntoRule)
+            {
+                if (liveEvent.EventIds.Intersect(rule.RequiredEvents).Any())
+                {
+                    res = true;
+                    break;
+                }
+            }
+
+            return res;
         }
     }
 }

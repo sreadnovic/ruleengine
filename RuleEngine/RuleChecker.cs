@@ -1,4 +1,5 @@
-﻿using RuleEngine.Factory;
+﻿using RuleEngine.Common;
+using RuleEngine.Factory;
 using RuleEngine.Models;
 using RuleEngine.Strategy;
 using System.Collections.Generic;
@@ -26,16 +27,21 @@ namespace RuleEngine
 
             if (ruleContext.Execute(_rule, _liveEventsThatFitIntoRule.ToList()))
             {
-                ResetEvents();
+                ClearProcessedEvents();
                 return true;
             }
 
             return false;
         }
 
-        private void ResetEvents()
+        private void ClearProcessedEvents()
         {
-            _liveEventsThatFitIntoRule = new List<LiveEvent>();
+            foreach (LiveEvent liveEvent in _liveEventsThatFitIntoRule)
+            {
+                List<string> eventsToRemove = _rule.RequiredEvents.Intersect(liveEvent.EventIds).ToList();
+
+                liveEvent.EventIds = liveEvent.EventIds.Except(eventsToRemove).ToList();
+            }
         }
     }
 }

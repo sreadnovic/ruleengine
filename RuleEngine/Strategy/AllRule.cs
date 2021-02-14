@@ -1,5 +1,4 @@
 ﻿using RuleEngine.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,7 +9,27 @@ namespace RuleEngine.Strategy
     {
         public bool RuleFulfilled(Rule rule, List<LiveEvent> liveEventsThatFitIntoRule)
         {
-            return rule.TurbineIds.All(x => liveEventsThatFitIntoRule.Select(x => x.TurbineId).Contains(x));
+            if (liveEventsThatFitIntoRule.Select(x => x.TurbineId).Count() != rule.TurbineIds.Count())
+            {
+                return false;
+            }
+
+            bool res = false;
+
+            foreach (LiveEvent liveEvent in liveEventsThatFitIntoRule)
+            {
+                if (liveEvent.EventIds.Intersect(rule.RequiredEvents).Any())
+                {
+                    res = true;
+                }
+                else
+                {
+                    res = false;
+                    break;
+                }
+            }
+
+            return res;
         }
     }
 }

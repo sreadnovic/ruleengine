@@ -12,12 +12,11 @@ namespace RuleEngine
         public RuleService(IEnumerable<Rule> allRules)
         {
             _allRules = allRules;
+            InitializeRuleTrackers();
         }
 
         public void CheckAllRules(LiveEvent liveEvent)
         {
-            InitializeRuleTrackers();
-
             foreach (RuleLiveEventsTracker ruleTracker in _ruleTrackers)
             {
                 IEnumerable<LiveEvent> liveEventsThatFitIntoRule = ruleTracker.GetLiveEventsThatFitIntoRule(liveEvent);
@@ -34,11 +33,13 @@ namespace RuleEngine
 
         private void InitializeRuleTrackers()
         {
-            if (_ruleTrackers == null)
+            if (_ruleTrackers != null)
             {
-                _ruleTrackers = new List<RuleLiveEventsTracker>();
+                return;
             }
 
+            _ruleTrackers = new List<RuleLiveEventsTracker>();
+            
             foreach (Rule rule in _allRules)
             {
                 _ruleTrackers.Add(new RuleLiveEventsTracker(rule));

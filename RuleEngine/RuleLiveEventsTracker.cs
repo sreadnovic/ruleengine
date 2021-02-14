@@ -24,7 +24,6 @@ namespace RuleEngine.Common
             InitializeLiveEventsThatFitIntoRule();
 
             if (LiveEventTurbineBelongsToRule(liveEvent) 
-                && LiveEventHasRuleRequiredEvents(liveEvent)
                 && LiveEventDoesNotHaveRuleForbiddenEvents(liveEvent))
             {
                 _liveEventsThatFitIntoRule.Add(liveEvent);
@@ -42,7 +41,6 @@ namespace RuleEngine.Common
         }
 
         private bool LiveEventTurbineBelongsToRule(LiveEvent liveEvent) => Rule.TurbineIds.Contains(liveEvent.TurbineId);
-        private bool LiveEventHasRuleRequiredEvents(LiveEvent liveEvent) => liveEvent.EventIds.Intersect(Rule.RequiredEvents).Any();
         private bool LiveEventDoesNotHaveRuleForbiddenEvents(LiveEvent liveEvent) => !liveEvent.EventIds.Intersect(Rule.ForbidenEvents).Any();
 
     }
