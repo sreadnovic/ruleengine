@@ -19,18 +19,13 @@ namespace RuleEngine.Strategy
 
             foreach (LiveEvent liveEvent in liveEventsThatFitIntoRule)
             {
-                if (count > 1)
-                {
-                    return false;
-                }
-
                 if (liveEvent.EventIds.Intersect(rule.RequiredEvents).Any())
                 {
                     count++;
                 }
             }
 
-            return true;
+            return count == 1;
         }
     }
 }
